@@ -3,9 +3,11 @@ import { Enemy } from '../entities/Enemy';
 import { Kruglyk } from '../entities/Kruglyk';
 import { Projectile } from '../entities/Projectile';
 import { InputController } from '../systems/InputController';
+import { EnemyRoster } from '../systems/EnemyRoster';
+import { setupHighDpiRendering } from '../systems/HighDpiRenderer';
 import { MathProblemGenerator, type MathProblem } from '../systems/MathProblemGenerator';
 import { GameHud } from '../ui/GameHud';
-import { ENEMY_POSITION, FONT_FAMILY, PLAYER_POSITION } from '../utils/constants';
+import { ENEMY_POSITION, FONT_FAMILY, PLAYER_POSITION, TEXT_RESOLUTION } from '../utils/constants';
 import { drawLandscape } from '../utils/drawLandscape';
 
 type GamePhase = 'ready' | 'shooting' | 'celebrating';
@@ -17,6 +19,7 @@ export class GameScene extends Phaser.Scene {
   private score = 0;
   private phase: GamePhase = 'ready';
   private readonly generator = new MathProblemGenerator();
+  private readonly enemyRoster = new EnemyRoster();
   private currentProblem?: MathProblem;
   private feedback = '';
 
@@ -25,10 +28,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
+    setupHighDpiRendering(this);
     this.score = 0;
     this.phase = 'ready';
     this.feedback = '';
     this.currentProblem = undefined;
+    this.enemyRoster.reset();
     drawLandscape(this);
     this.player = new Kruglyk(this, PLAYER_POSITION.x, PLAYER_POSITION.y);
     this.hud = new GameHud(this, { increment: this.increment, attack: this.attack, restart: () => this.scene.restart() });
@@ -54,11 +59,13 @@ export class GameScene extends Phaser.Scene {
 
   private spawnEnemy(): void {
     this.currentProblem = this.generator.generate(this.currentProblem);
-    this.enemy = new Enemy(this, ENEMY_POSITION.x, ENEMY_POSITION.y, this.currentProblem);
+    const variant = this.enemyRoster.next();
+    this.enemy = new Enemy(this, ENEMY_POSITION.x, ENEMY_POSITION.y, this.currentProblem, variant);
+    this.hud.setEnemyName(variant.name);
     this.phase = 'ready';
     this.feedback = '';
     this.hud.setAttacking(false);
-    this.hud.showMessage('Обчисли. Обери число. Атакуй!', '#dbe4c0');
+    this.hud.showMessage('Обчисли. Обери число. Атакуй!', '#fff3dc');
     this.syncStatus();
   }
 
@@ -91,7 +98,7 @@ export class GameScene extends Phaser.Scene {
     this.feedback = 'Чудово! Твоя магія спрацювала!';
     this.hud.setScore(this.score);
     this.hud.showMessage(this.feedback, '#ede7a4');
-    const point = this.add.text(this.enemy.x, this.enemy.y - 59, '+1', { fontFamily: FONT_FAMILY, fontSize: '30px', fontStyle: 'bold', color: '#f3e8a2' }).setOrigin(0.5);
+    const point = this.add.text(this.enemy.x, this.enemy.y - 59, '+1', { resolution: TEXT_RESOLUTION, fontFamily: FONT_FAMILY, fontSize: '30px', fontStyle: 'bold', color: '#f3e8a2' }).setOrigin(0.5);
     this.tweens.add({ targets: point, y: point.y - 47, alpha: 0, duration: 1000, ease: 'Sine.Out', onComplete: () => point.destroy() });
     this.enemy.defeat(() => this.time.delayedCall(650, () => this.spawnEnemy()));
     this.syncStatus();
@@ -101,7 +108,7 @@ export class GameScene extends Phaser.Scene {
     const status = document.getElementById('game-status');
     if (status) {
       const state = this.phase === 'ready' ? 'Готовий до атаки.' : this.phase === 'shooting' ? 'Постріл.' : 'З’являється новий Лихий.';
-      status.textContent = `Приклад: ${this.currentProblem?.display}. Число Круглика: ${this.player.value}. Очки: ${this.score}. ${state} ${this.feedback}`;
+      status.textContent = `Приклад: ${this.currentProblem?.display}. Число Круглика: ${this.player.value}. Рахунок: ${this.score}. ${state} ${this.feedback} Лихий: ${this.enemy.variant.name}.`;
     }
     const attackButton = document.getElementById('touch-attack');
     if (attackButton instanceof HTMLButtonElement) attackButton.disabled = this.phase !== 'ready';

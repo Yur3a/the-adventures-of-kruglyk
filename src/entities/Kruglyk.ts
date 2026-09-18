@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { FONT_FAMILY, nextNumber } from '../utils/constants';
+import { FONT_FAMILY, nextNumber, TEXT_RESOLUTION } from '../utils/constants';
 
 export class Kruglyk extends Phaser.GameObjects.Container {
   value = 0;
@@ -31,7 +31,7 @@ export class Kruglyk extends Phaser.GameObjects.Container {
     face.fillStyle(0xb0d9ff, 0.7).fillEllipse(-27, -1, 9, 5).fillEllipse(27, -1, 9, 5);
     face.lineStyle(2, 0xd1eaff).beginPath().arc(0, 29, 5, 0.15, Math.PI - 0.15).strokePath();
     this.visual.add(face);
-    this.numberLabel = scene.add.text(0, 10, '0', { fontFamily: FONT_FAMILY, fontSize: '33px', fontStyle: 'bold', color: '#ffffff', stroke: '#3178d7', strokeThickness: 1 }).setOrigin(0.5);
+    this.numberLabel = scene.add.text(0, 10, '0', { resolution: TEXT_RESOLUTION, fontFamily: FONT_FAMILY, fontSize: '33px', fontStyle: 'bold', color: '#ffffff', stroke: '#3178d7', strokeThickness: 1 }).setOrigin(0.5);
     this.visual.add(this.numberLabel);
     scene.tweens.add({ targets: this.visual, y: -6, duration: 1250, ease: 'Sine.InOut', yoyo: true, repeat: -1 });
   }
