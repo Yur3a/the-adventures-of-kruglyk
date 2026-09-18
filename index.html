@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f8f2" />
+    <meta name="description" content="Пригоди Круглика — затишна математична гра. Додавай числа до 20, допомагай синьому герою та перемагай Лихих!" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>Пригоди Круглика · Грай та додавай</title>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="Круглик — на головну">
+          <span class="brand-ball" aria-hidden="true"><i></i><i></i></span>
+          круглик<span class="brand-dot">.</span>
+        </a>
+        <span class="header-note"><span aria-hidden="true">✦</span> Маленькі кроки, великі відкриття</span>
+      </header>
+      <main>
+        <section class="intro" aria-labelledby="game-title">
+          <div class="eyebrow"><span></span> ГРАЄМО. ДОДАЄМО. ПЕРЕМАГАЄМО.</div>
+          <h1 id="game-title">Пригоди <span>Круглика</span></h1>
+          <p>Трішки математики. Краплинка магії. І ти — герой!</p>
+        </section>
+        <section class="game-shell" aria-label="Математична гра">
+          <div class="game-topline">
+            <span><span class="live-dot"></span> ГАЛЯВИНА ЧИСЕЛ</span>
+            <span class="difficulty">Додавання <b>до 20</b></span>
+          </div>
+          <div id="game" role="application" aria-label="Пригоди Круглика. Space — збільшити число, Enter — атакувати." tabindex="0"></div>
+          <div class="touch-controls" aria-label="Керування дотиком">
+            <button id="touch-number" type="button">+1 <span>Змінити число</span></button>
+            <button id="touch-attack" type="button"><span>Атакувати</span> →</button>
+          </div>
+          <div class="game-bottomline"><span><span aria-hidden="true">✧</span> Кожна спроба — крок уперед</span><span>Без поспіху. У своєму темпі.</span></div>
+        </section>
+        <div class="instructions" aria-label="Як грати">
+          <div><span class="step">1</span><p><strong>Розв’яжи приклад</strong><span>Подивись на числа над Лихим</span></p></div>
+          <span class="step-arrow" aria-hidden="true">→</span>
+          <div><span class="step">2</span><p><strong>Обери відповідь</strong><span>Натискай <kbd>Space</kbd>, щоб змінити число</span></p></div>
+          <span class="step-arrow" aria-hidden="true">→</span>
+          <div><span class="step">3</span><p><strong>Випусти магію!</strong><span>Натисни <kbd>Enter</kbd> та отримай очко</span></p></div>
+        </div>
+        <p id="game-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+      </main>
+      <footer><span>Створено для маленьких допитливих розумів</span><span class="footer-mark">З любов’ю до гри <span aria-hidden="true">♡</span></span></footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
